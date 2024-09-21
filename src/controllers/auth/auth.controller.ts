@@ -2,7 +2,9 @@ import express, { Response } from "express";
 import { Request as JWTRequest } from "express-jwt";
 import { InternalRequest } from "express-validator/lib/base";
 import { AuthErrors } from "../../lib/error-handling/auth-error.type";
+import * as userRepository from "../../repositories/user.repository";
 import * as authService from "../../services/auth/auth.service";
+import { jwtMiddlewareValidator } from "../../services/auth/jwt.service";
 import { loginBodyValidation } from "../../validators/auth-validators/login-user.validator";
 import { registerBodyValidation } from "../../validators/auth-validators/register-user.validator";
 import { tokenCookieValidator } from "../../validators/auth-validators/token-header.validator";
@@ -14,8 +16,16 @@ router.post(
   "/session",
   tokenCookieValidator,
   checkValidation,
-  (req: InternalRequest, res: Response) => {
-    return res.send("Hello World");
+  jwtMiddlewareValidator,
+  async (req: InternalRequest, res: Response) => {
+    const user = await userRepository.getUserById(req.auth.userId);
+    if (user) {
+      return res.status(200).send({
+        username: user.username,
+        email: user.email,
+      });
+    }
+    return res.status(404).send({ message: AuthErrors.USER_NOT_FOUND });
   }
 );
 
@@ -26,24 +36,21 @@ router.post(
   checkValidation,
   async (req: InternalRequest, res: Response) => {
     const result = await authService.loginUser(req.body);
-    if (!result)
-      return res
-        .status(401)
-        .send({ message: AuthErrors.INSUFFICIENT_CREDENTIALS });
-
-    const token = "this-is-a-token";
-    res.cookie("token", token, {
-      sameSite: "none",
-      secure: true,
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-    });
-
-    return res.status(200).send();
+    if (result) {
+      res.cookie("access_token", result, {
+        sameSite: "none",
+        secure: true,
+        httpOnly: true,
+      });
+      return res.status(200).send();
+    }
+    return res
+      .status(401)
+      .send({ message: AuthErrors.INSUFFICIENT_CREDENTIALS });
   }
 );
 
-router.get("/test", (req: JWTRequest, res) => {
+router.get("/test", jwtMiddlewareValidator, (req: JWTRequest, res) => {
   console.log(req.auth);
   return res.send("Hello World");
 });

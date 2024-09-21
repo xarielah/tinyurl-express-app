@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { IUser } from "../../database/models/user.model";
 import * as userRepository from "../../repositories/user.repository";
+import * as jwtService from "../auth/jwt.service";
 
 export interface ILoginUser {
   username: string;
@@ -10,10 +11,12 @@ export interface ILoginUser {
 export async function loginUser({
   username,
   password,
-}: ILoginUser): Promise<IUser | null | boolean> {
+}: ILoginUser): Promise<string | null | boolean> {
   const user = await userRepository.getUserByUsername(username);
   if (!user) return null;
-  if (await bcrypt.compare(password, user.password)) return user;
+  if (await bcrypt.compare(password, user.password)) {
+    return jwtService.signJwt({ userId: (user as any)._id });
+  }
   return false;
 }
 
