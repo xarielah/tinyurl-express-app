@@ -1,9 +1,14 @@
 import express from "express";
-const route = express.Router();
+import * as redirectRepository from "../../repositories/redirect.repository";
+const router = express.Router();
 
 // :shortId
-route.get(":shortId", (req, res) => {
+router.get(":shortId", (req, res) => {
   return res.send("Hello World");
 });
 
-export { route as redirectController };
+router.get("/", (req, res) => {
+  return redirectRepository.setRedirectUrl("key", "url");
+});
+
+export { router as redirectController };

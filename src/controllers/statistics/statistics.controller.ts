@@ -1,8 +1,8 @@
 import express from "express";
-const route = express.Router();
+const router = express.Router();
 
-route.get(":redirectId", (req, res) => {
+router.get(":redirectId", (req, res) => {
   return res.send("Hello World");
 });
 
-export { route as statisticsController };
+export { router as statisticsController };

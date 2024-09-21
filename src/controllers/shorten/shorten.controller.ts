@@ -1,8 +1,8 @@
 import express from "express";
-const route = express.Router();
+const router = express.Router();
 
-route.post("/", (req, res) => {
+router.post("/", (req, res) => {
   return res.send("Hello World");
 });
 
-export { route as shortenController };
+export { router as shortenController };
