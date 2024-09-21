@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "start:dev": "tsc -w & nodemon dist/main.js",
+    "start:prod": "node dist/main.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "redis": "^4.7.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21"
+  }
+}
