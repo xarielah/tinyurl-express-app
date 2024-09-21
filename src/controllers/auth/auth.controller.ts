@@ -1,4 +1,5 @@
 import express, { Response } from "express";
+import { Request as JWTRequest } from "express-jwt";
 import { InternalRequest } from "express-validator/lib/base";
 import { AuthErrors } from "../../lib/error-handling/auth-error.type";
 import * as authService from "../../services/auth/auth.service";
@@ -41,6 +42,11 @@ router.post(
     return res.status(200).send();
   }
 );
+
+router.get("/test", (req: JWTRequest, res) => {
+  console.log(req.auth);
+  return res.send("Hello World");
+});
 
 // register
 router.post(

@@ -1,3 +1,9 @@
+import dotenv from "dotenv";
+import path from "path";
+dotenv.config({
+  path: path.join(__dirname, "../../../.env"),
+});
+
 export const redisConfig = {
-  uri: process.env.REDIS_URI || "redis://127.0.0.1:6379",
+  uri: process.env.REDIS_URI,
 };
