@@ -1,0 +1,5 @@
+# Ignore these following files / directories
+
+/dist/
+/node_modules/
+.env*
