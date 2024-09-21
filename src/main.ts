@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api/auth", authController);
 app.use("/api/shorten", shortenController);
 app.use("/api/stats", statisticsController);
-app.use("/", redirectController);
+app.use("/api/redirect", redirectController);
 
 if (!isDevelopment()) {
   app.use(cors);
