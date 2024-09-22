@@ -7,13 +7,17 @@ export const checkValidation = (
   next: NextFunction
 ) => {
   const result = validationResult(req);
-  if (result.isEmpty()) return next();
-  return res.status(400).send(
-    result.array({ onlyFirstError: true }).map((err) => {
-      return {
-        field: (err as { path: string }).path,
-        message: err.msg,
-      };
-    })
-  );
+  if (!result.isEmpty()) {
+    return res.status(400).send({
+      errors: result.array({ onlyFirstError: true }).map(mapErrors),
+    });
+  }
+  return next();
 };
+
+function mapErrors(err: any) {
+  return {
+    target: (err as { path: string }).path,
+    message: err.msg,
+  };
+}
