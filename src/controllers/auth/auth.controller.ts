@@ -1,5 +1,4 @@
 import express, { Response } from "express";
-import { Request as JWTRequest } from "express-jwt";
 import { InternalRequest } from "express-validator/lib/base";
 import { AuthErrors } from "../../lib/error-handling/auth-error.type";
 import * as userRepository from "../../repositories/user.repository";
@@ -37,7 +36,13 @@ router.post(
   async (req: InternalRequest, res: Response) => {
     const result = await authService.loginUser(req.body);
     if (result) {
-      res.cookie("access_token", result, {
+      res.cookie("access_token", result.access_token, {
+        sameSite: "none",
+        secure: true,
+        httpOnly: true,
+      });
+
+      res.cookie("refresh_token", result.refresh_token, {
         sameSite: "none",
         secure: true,
         httpOnly: true,
@@ -49,11 +54,6 @@ router.post(
       .send({ message: AuthErrors.INSUFFICIENT_CREDENTIALS });
   }
 );
-
-router.get("/test", jwtMiddlewareValidator, (req: JWTRequest, res) => {
-  console.log(req.auth);
-  return res.send("Hello World");
-});
 
 // register
 router.post(

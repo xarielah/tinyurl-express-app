@@ -7,7 +7,11 @@ import { ICreateShorten } from "../lib/interfaces/shorten/create-shorten.interfa
 export function createShortenLink(
   data: ICreateShorten
 ): Promise<ShortenLinkDocument> {
-  return ShortenLink.create(data);
+  return ShortenLink.create({
+    originalUrl: data.url,
+    shortId: data.shortId,
+    owner: data.ownerId,
+  });
 }
 
 export function getShortenLinksByOwner(
