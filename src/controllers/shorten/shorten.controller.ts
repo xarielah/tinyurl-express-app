@@ -1,5 +1,6 @@
 import express, { Response } from "express";
 import { InternalRequest } from "express-validator/lib/base";
+import { ShortenErrors } from "../../lib/error-handling/shorten-error.type";
 import { jwtMiddlewareValidator } from "../../services/auth/jwt.service";
 import * as shortenService from "../../services/shorten/shorten.service";
 import { checkValidation } from "../../validators/check-validation";
@@ -39,7 +40,12 @@ router.delete(
   "/:shortenUrlId",
   jwtMiddlewareValidator,
   async (req: InternalRequest, res: Response) => {
-    res.status(200).send("hi!");
+    const { shortenUrlId: shortId } = req.params as { shortenUrlId: string };
+    const owner = req.auth.userId;
+    const data = { shortId, owner };
+    const result = await shortenService.deleteShortenLinkById(data);
+    if (result) return res.status(200).send(result);
+    res.status(404).send({ message: ShortenErrors.SHORTEN_NOT_FOUND });
   }
 );
 

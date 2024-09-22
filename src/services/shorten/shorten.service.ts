@@ -7,18 +7,11 @@ import * as shortenRepository from "../../repositories/shorten-link.repository";
 export async function createShortURL(
   data: Pick<ICreateShorten, "ownerId" | "url">
 ): Promise<ShortenLinkDocument | null> {
-  const result = await shortenRepository.createShortenLink({
-    ...data,
-    shortId: getRandomId(),
-  });
-  if (result) {
-    const cacheResult = await redisRepository.createKeyWithValue(
-      result.shortId,
-      result.originalUrl
-    );
-    if (cacheResult) return result;
-  }
-  return null;
+  const creationPayload: ICreateShorten = { shortId: getRandomId(), ...data };
+  const result = await shortenRepository.createShortenLink(creationPayload);
+  if (!result) return null;
+  await redisRepository.createKeyWithValue(result.shortId, result.originalUrl);
+  return result;
 }
 
 export async function getAllShotenByUserId(userId: string) {
@@ -36,4 +29,11 @@ export async function getShortenLinkByShortId(
   shortId: string
 ): Promise<ShortenLinkDocument | null> {
   return shortenRepository.getShortenLinkByShortId(shortId);
+}
+
+export async function deleteShortenLinkById(data: IDeleteShorten) {
+  const result = await shortenRepository.deleteShortenLink(data);
+  if (!result) return null;
+  await redisRepository.removeKeyAndValue(result.shortId);
+  return { id: result._id, url: result.originalUrl, shortId: result.shortId };
 }

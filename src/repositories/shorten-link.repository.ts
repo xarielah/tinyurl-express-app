@@ -27,7 +27,8 @@ export function getShortenLinkByShortId(
 }
 
 export function deleteShortenLink(
-  shortId: string
+  data: IDeleteShorten
 ): Promise<ShortenLinkDocument | null> {
-  return ShortenLink.findOneAndDelete({ shortId }).exec();
+  const { shortId, owner } = data;
+  return ShortenLink.findOneAndDelete({ _id: shortId, owner }).exec();
 }
