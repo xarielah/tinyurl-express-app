@@ -1,4 +1,6 @@
-import { model, ObjectId, Schema } from "mongoose";
+import { HydratedDocument, model, ObjectId, Schema } from "mongoose";
+
+export type EventDocument = HydratedDocument<ILinkEvent>;
 
 export interface ILinkEvent {
   shortLinkId: ObjectId | string;

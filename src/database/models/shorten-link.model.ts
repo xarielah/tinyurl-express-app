@@ -1,4 +1,6 @@
-import { model, ObjectId, Schema } from "mongoose";
+import { HydratedDocument, model, ObjectId, Schema } from "mongoose";
+
+export type ShortenLinkDocument = HydratedDocument<IShortenLink>;
 
 export interface IShortenLink {
   originalUrl: string;

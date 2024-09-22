@@ -1,9 +1,13 @@
-import { model, Schema } from "mongoose";
+import { HydratedDocument, model, Schema } from "mongoose";
+
+export type UserDocument = HydratedDocument<IUser>;
 
 export interface IUser {
   username: string;
   email: string;
   password: string;
+  refresh_token: string;
+  access_token?: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -20,6 +24,14 @@ const userSchema = new Schema<IUser>({
   password: {
     type: String,
     required: true,
+  },
+  refresh_token: {
+    type: String,
+    default: "",
+  },
+  access_token: {
+    type: String,
+    default: "",
   },
 });
 
