@@ -5,7 +5,7 @@ export function getUserById(userId: string): Promise<IUser | null> {
   return User.findById(userId).exec();
 }
 
-export function createUser(user: ICreateUser): Promise<IUser> {
+export function createUser(user: ICreateUser): Promise<UserDocument> {
   return User.create(user);
 }
 

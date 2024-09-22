@@ -1,4 +1,4 @@
-import express, { Response } from "express";
+import express, { CookieOptions, Response } from "express";
 import { InternalRequest } from "express-validator/lib/base";
 import { AuthErrors } from "../../lib/error-handling/auth-error.type";
 import * as userRepository from "../../repositories/user.repository";
@@ -28,6 +28,12 @@ router.post(
   }
 );
 
+const cookieOptions: CookieOptions = {
+  sameSite: "none",
+  secure: true,
+  httpOnly: true,
+};
+
 // login
 router.post(
   "/login",
@@ -36,17 +42,8 @@ router.post(
   async (req: InternalRequest, res: Response) => {
     const result = await authService.loginUser(req.body);
     if (result) {
-      res.cookie("access_token", result.access_token, {
-        sameSite: "none",
-        secure: true,
-        httpOnly: true,
-      });
-
-      res.cookie("refresh_token", result.refresh_token, {
-        sameSite: "none",
-        secure: true,
-        httpOnly: true,
-      });
+      res.cookie("access_token", result.access_token, cookieOptions);
+      res.cookie("refresh_token", result.refresh_token, cookieOptions);
       return res.status(200).send();
     }
     return res
@@ -64,8 +61,9 @@ router.post(
     const result = await authService.registerUser(req.body);
     if (result === null)
       return res.status(400).send({ message: AuthErrors.USER_ALREADY_EXISTS });
-
-    return res.status(201).send();
+    res.cookie("access_token", result.access_token, cookieOptions);
+    res.cookie("refresh_token", result.refresh_token, cookieOptions);
+    return res.status(201).json({ message: "User created successfully" });
   }
 );
 

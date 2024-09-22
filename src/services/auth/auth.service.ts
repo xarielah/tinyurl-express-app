@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
 import { IUser } from "../../database/models/user.model";
-import { ICreateUser } from "../../lib/interfaces/auth/create-user.interface";
 import * as userRepository from "../../repositories/user.repository";
 import * as jwtService from "../auth/jwt.service";
 
@@ -37,14 +36,22 @@ export async function registerUser({
   username,
   email,
   password,
-}: IUser): Promise<ICreateUser | null> {
-  const user = await userRepository.getUserByUsername(username);
+}: IUser): Promise<ITokenResult | null> {
+  const user = await userRepository.getByUsernameOrEmail(username, email);
   if (user) return null;
-  return userRepository.createUser({
+  const newUser = await userRepository.createUser({
     username,
     email,
     password: await _hashPassword(password),
   });
+  return {
+    access_token: jwtService.generateAccessToken({
+      userId: newUser._id.toString(),
+    }),
+    refresh_token: jwtService.generateRefreshToken({
+      userId: newUser._id.toString(),
+    }),
+  };
 }
 
 function _hashPassword(password: string): Promise<string> {

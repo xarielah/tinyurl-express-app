@@ -8,7 +8,6 @@ import { authController } from "./controllers/auth/auth.controller";
 import { redirectController } from "./controllers/redirect/redirect.controller";
 import { shortenController } from "./controllers/shorten/shorten.controller";
 import { statisticsController } from "./controllers/statistics/statistics.controller";
-import { isDevelopment } from "./lib/config/environment.config";
 import { connectMongoClient } from "./lib/mongo/client";
 import { connectRedisClient } from "./lib/redis/connect-client";
 dotenv.config({
@@ -20,6 +19,7 @@ const app = express();
 connectRedisClient();
 connectMongoClient();
 
+app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -34,10 +34,6 @@ app.use("/api/auth", authController);
 app.use("/api/shorten", shortenController);
 app.use("/api/stats", statisticsController);
 app.use("/api/redirect", redirectController);
-
-if (!isDevelopment()) {
-  app.use(cors);
-}
 
 app.listen(process.env.PORT || 3000, () => {
   console.log("Server is running");
