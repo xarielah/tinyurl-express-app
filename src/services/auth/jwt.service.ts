@@ -5,7 +5,7 @@ import { jwtConfig } from "../../lib/config/jwt.config";
 export const jwtMiddlewareValidator = expressjwt({
   secret: jwtConfig.secret,
   algorithms: [jwtConfig.algorithm],
-  getToken: (req) => req.cookies["access_token"],
+  getToken: (req) => req.cookies["access_token"] || req.headers["x-auth-token"],
 });
 
 export function signJwt(payload: any, expiresIn?: string | number) {

@@ -6,15 +6,12 @@ import * as authService from "../../services/auth/auth.service";
 import { jwtMiddlewareValidator } from "../../services/auth/jwt.service";
 import { loginBodyValidation } from "../../validators/auth-validators/login-user.validator";
 import { registerBodyValidation } from "../../validators/auth-validators/register-user.validator";
-import { tokenCookieValidator } from "../../validators/auth-validators/token-header.validator";
 import { checkValidation } from "../../validators/check-validation";
 const router = express.Router();
 
 // session
 router.post(
   "/session",
-  tokenCookieValidator,
-  checkValidation,
   jwtMiddlewareValidator,
   async (req: InternalRequest, res: Response) => {
     const user = await userRepository.getUserById(req.auth.userId);
@@ -66,6 +63,14 @@ router.post(
     return res.status(201).json({ message: "User created successfully" });
   }
 );
+
+// logout
+router.post("/logout", async (_: InternalRequest, res: Response) => {
+  // TODO: Implement logout and revoke refresh token from database
+  res.cookie("access_token", "", { ...cookieOptions, expires: new Date(0) });
+  res.cookie("refresh_token", "", { ...cookieOptions, expires: new Date(0) });
+  return res.status(200).send();
+});
 
 // forgot-password
 router.post("/forgot-password", (req, res) => {

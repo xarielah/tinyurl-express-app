@@ -9,7 +9,7 @@ const router = express.Router();
 
 // create short link
 router.post(
-  "/create-new",
+  "/new",
   jwtMiddlewareValidator,
   createLinkValidator,
   checkValidation,
