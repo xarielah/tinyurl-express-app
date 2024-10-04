@@ -24,11 +24,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// TODO (Not final):
-// # For each controller register an auth middleware.
-// # For redirect controller register a middleware that finds that adds any statistics before redirecting.
-// # For statistics controller register a middleware that finds the needed statistics for a given redirectId.
-
 // Controllers
 app.use("/api/auth", authController);
 app.use("/api/shorten", shortenController);

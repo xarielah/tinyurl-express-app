@@ -16,10 +16,8 @@ router.post(
   async (req: InternalRequest, res: Response) => {
     const user = await userRepository.getUserById(req.auth.userId);
     if (user) {
-      return res.status(200).send({
-        username: user.username,
-        email: user.email,
-      });
+      const { username, email } = user;
+      return res.status(200).send({ username, email });
     }
     return res.status(404).send({ message: AuthErrors.USER_NOT_FOUND });
   }
