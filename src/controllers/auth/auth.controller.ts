@@ -27,6 +27,7 @@ const cookieOptions: CookieOptions = {
   sameSite: "none",
   secure: true,
   httpOnly: true,
+  domain: process.env.FRONTEND_URL,
 };
 
 // login
