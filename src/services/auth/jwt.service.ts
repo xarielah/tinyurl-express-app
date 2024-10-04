@@ -7,7 +7,7 @@ export const jwtMiddlewareValidator = expressjwt({
   algorithms: [jwtConfig.algorithm],
   getToken: (req) => req.cookies["access_token"] || req.headers["x-auth-token"],
   onExpired: (_, err) => {
-    console.log(err);
+    console.log(`Unauthorized: ${err.message}`);
   },
 });
 

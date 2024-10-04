@@ -7,7 +7,7 @@ export interface ILinkEvent {
   referer: string;
   visitorIp: string;
   visitorLocation: string;
-  eventTimeStamp: Date;
+  eventTimeStamp: number;
 }
 
 const eventSchema = new Schema<ILinkEvent>({
@@ -25,11 +25,10 @@ const eventSchema = new Schema<ILinkEvent>({
   },
   visitorLocation: {
     type: String,
-    required: true,
   },
   eventTimeStamp: {
-    type: Date,
-    default: new Date(),
+    type: Number,
+    required: true,
   },
 });
 
