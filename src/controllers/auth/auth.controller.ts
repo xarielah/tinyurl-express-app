@@ -26,6 +26,7 @@ router.post(
 const cookieOptions: CookieOptions = {
   secure: true,
   httpOnly: true,
+  sameSite: "none",
 };
 
 // login
