@@ -27,6 +27,7 @@ const cookieOptions: CookieOptions = {
   secure: true,
   httpOnly: true,
   sameSite: "none",
+  partitioned: true,
 };
 
 // login
