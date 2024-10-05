@@ -28,6 +28,7 @@ const cookieOptions: CookieOptions = {
   httpOnly: true,
   sameSite: "none",
   partitioned: true,
+  domain: process.env.COOKIE_HOST || undefined,
 };
 
 // login
