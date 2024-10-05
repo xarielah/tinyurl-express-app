@@ -56,14 +56,14 @@ router.post(
     const result = await authService.registerUser(req.body);
     if (result === null)
       return res.status(400).send({ message: AuthErrors.USER_ALREADY_EXISTS });
-    const accessOptions = {
+    const accessOptions: CookieOptions = {
       ...cookieOptions,
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      maxAge: 1000 * 60 * 60 * 24,
     };
     res.cookie("access_token", result.access_token, accessOptions);
-    const refreshOptions = {
+    const refreshOptions: CookieOptions = {
       ...cookieOptions,
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+      maxAge: 1000 * 60 * 60 * 24 * 7,
     };
     res.cookie("refresh_token", result.refresh_token, refreshOptions); // 7 days
     return res.status(201).json({ message: "User created successfully" });
