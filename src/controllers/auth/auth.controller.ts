@@ -25,10 +25,10 @@ router.post(
 
 const cookieOptions: CookieOptions = {
   secure: true,
-  httpOnly: true,
   sameSite: "none",
-  partitioned: true,
-  domain: process.env.COOKIE_HOST || undefined,
+  // httpOnly: true,
+  // partitioned: true,
+  // domain: process.env.COOKIE_HOST || undefined,
 };
 
 // login
