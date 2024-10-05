@@ -24,7 +24,6 @@ router.post(
 );
 
 const cookieOptions: CookieOptions = {
-  sameSite: "none",
   secure: true,
   httpOnly: true,
 };
