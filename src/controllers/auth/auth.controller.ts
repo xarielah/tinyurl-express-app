@@ -36,8 +36,6 @@ router.post(
   async (req: InternalRequest, res: Response) => {
     const result = await authService.loginUser(req.body);
     if (result) {
-      res.cookie("access_token", result.access_token, cookieOptions);
-      res.cookie("refresh_token", result.refresh_token, cookieOptions);
       return res.status(200).json({
         access_token: result.access_token,
         refresh_token: result.refresh_token,
@@ -55,20 +53,15 @@ router.post(
   registerBodyValidation,
   checkValidation,
   async (req: InternalRequest, res: Response) => {
+    console.log(req.body);
     const result = await authService.registerUser(req.body);
     if (result === null)
       return res.status(400).send({ message: AuthErrors.USER_ALREADY_EXISTS });
-    const accessOptions: CookieOptions = {
-      ...cookieOptions,
-      maxAge: 1000 * 60 * 60 * 24,
-    };
-    res.cookie("access_token", result.access_token, accessOptions);
-    const refreshOptions: CookieOptions = {
-      ...cookieOptions,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    };
-    res.cookie("refresh_token", result.refresh_token, refreshOptions); // 7 days
-    return res.status(201).json({ message: "User created successfully" });
+
+    return res.status(201).json({
+      access_token: result.access_token,
+      refresh_token: result.refresh_token,
+    });
   }
 );
 
