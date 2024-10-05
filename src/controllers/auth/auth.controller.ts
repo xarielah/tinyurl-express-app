@@ -27,7 +27,6 @@ const cookieOptions: CookieOptions = {
   sameSite: "none",
   secure: true,
   httpOnly: true,
-  domain: process.env.COOKIE_HOST,
 };
 
 // login
@@ -57,8 +56,16 @@ router.post(
     const result = await authService.registerUser(req.body);
     if (result === null)
       return res.status(400).send({ message: AuthErrors.USER_ALREADY_EXISTS });
-    res.cookie("access_token", result.access_token, cookieOptions);
-    res.cookie("refresh_token", result.refresh_token, cookieOptions);
+    const accessOptions = {
+      ...cookieOptions,
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+    };
+    res.cookie("access_token", result.access_token, accessOptions);
+    const refreshOptions = {
+      ...cookieOptions,
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+    };
+    res.cookie("refresh_token", result.refresh_token, refreshOptions); // 7 days
     return res.status(201).json({ message: "User created successfully" });
   }
 );
