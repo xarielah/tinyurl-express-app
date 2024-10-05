@@ -47,7 +47,8 @@ router.post(
         ...cookieOptions,
         maxAge: 60 * 60 * 24 * 1000,
       });
-      return res.status(200).send();
+      console.debug(cookieOptions);
+      return res.status(200).json({ message: "Logged in successfully!" });
       // return res.status(200).json({
       //   access_token: result.access_token,
       //   refresh_token: result.refresh_token,
