@@ -1,4 +1,4 @@
-import express, { CookieOptions, Response } from "express";
+import express, { Response } from "express";
 import { InternalRequest } from "express-validator/lib/base";
 import { AuthErrors } from "../../lib/error-handling/auth-error.type";
 import * as userRepository from "../../repositories/user.repository";
@@ -23,14 +23,6 @@ router.post(
   }
 );
 
-const cookieOptions: CookieOptions = {
-  secure: true,
-  sameSite: "none",
-  // httpOnly: true,
-  partitioned: true,
-  // domain: process.env.COOKIE_HOST || undefined,
-};
-
 // login
 router.post(
   "/login",
@@ -39,19 +31,10 @@ router.post(
   async (req: InternalRequest, res: Response) => {
     const result = await authService.loginUser(req.body);
     if (result) {
-      res.cookie("access_token", result.access_token, {
-        ...cookieOptions,
-        maxAge: 60 * 60 * 1000,
+      return res.status(200).json({
+        access_token: result.access_token,
+        refresh_token: result.refresh_token,
       });
-      res.cookie("refresh_token", result.refresh_token, {
-        ...cookieOptions,
-        maxAge: 60 * 60 * 24 * 1000,
-      });
-      return res.status(200).json({ message: "Logged in successfully!" });
-      // return res.status(200).json({
-      //   access_token: result.access_token,
-      //   refresh_token: result.refresh_token,
-      // });
     }
     return res
       .status(401)
@@ -68,7 +51,6 @@ router.post(
     const result = await authService.registerUser(req.body);
     if (result === null)
       return res.status(400).send({ message: AuthErrors.USER_ALREADY_EXISTS });
-
     return res.status(201).json({
       access_token: result.access_token,
       refresh_token: result.refresh_token,
@@ -79,8 +61,6 @@ router.post(
 // logout
 router.post("/logout", async (_: InternalRequest, res: Response) => {
   // TODO: Implement logout and revoke refresh token from database
-  res.cookie("access_token", "", { ...cookieOptions, expires: new Date(0) });
-  res.cookie("refresh_token", "", { ...cookieOptions, expires: new Date(0) });
   return res.status(200).send();
 });
 
