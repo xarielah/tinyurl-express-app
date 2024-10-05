@@ -27,7 +27,7 @@ const cookieOptions: CookieOptions = {
   secure: true,
   sameSite: "none",
   // httpOnly: true,
-  // partitioned: true,
+  partitioned: true,
   // domain: process.env.COOKIE_HOST || undefined,
 };
 
@@ -47,7 +47,6 @@ router.post(
         ...cookieOptions,
         maxAge: 60 * 60 * 24 * 1000,
       });
-      console.debug(cookieOptions);
       return res.status(200).json({ message: "Logged in successfully!" });
       // return res.status(200).json({
       //   access_token: result.access_token,
