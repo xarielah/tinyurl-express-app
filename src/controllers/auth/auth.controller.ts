@@ -38,7 +38,10 @@ router.post(
     if (result) {
       res.cookie("access_token", result.access_token, cookieOptions);
       res.cookie("refresh_token", result.refresh_token, cookieOptions);
-      return res.status(200).send();
+      return res.status(200).json({
+        access_token: result.access_token,
+        refresh_token: result.refresh_token,
+      });
     }
     return res
       .status(401)
