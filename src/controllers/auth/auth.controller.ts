@@ -58,6 +58,24 @@ router.post(
   }
 );
 
+// refresh-token
+router.post("/refresh", async (req: InternalRequest, res: Response) => {
+  const refresh_token = req.headers ? req.headers["x-auth-token"] : "";
+  if (typeof refresh_token !== "string")
+    return res
+      .status(401)
+      .send({ error: { message: AuthErrors.INVALID_REFRESH_TOKEN } });
+  const result = authService.refreshToken(refresh_token);
+  if (result) {
+    return res.status(200).json({
+      access_token: result,
+    });
+  }
+  return res
+    .status(401)
+    .send({ error: { message: AuthErrors.INVALID_REFRESH_TOKEN } });
+});
+
 // logout
 router.post("/logout", async (_: InternalRequest, res: Response) => {
   // TODO: Implement logout and revoke refresh token from database

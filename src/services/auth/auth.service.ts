@@ -20,14 +20,15 @@ export async function loginUser({
   const user = await userRepository.getUserByUsername(username);
   if (!user) return null;
   if (await bcrypt.compare(password, user.password)) {
-    return {
+    const tokens = {
       access_token: jwtService.generateAccessToken({
-        userId: (user as any).id,
+        userId: user.id,
       }),
       refresh_token: jwtService.generateRefreshToken({
-        userId: (user as any).id,
+        userId: user.id,
       }),
     };
+    return tokens;
   }
   return false;
 }
@@ -63,4 +64,12 @@ export async function changePassword(
   password: string
 ): Promise<IUser | null> {
   return userRepository.updateUserPassword(userId, password);
+}
+
+export function refreshToken(token: string) {
+  if (!token) return null;
+  if (jwtService.isValidJwt(token)) {
+    const payload: any = jwtService.decode(token);
+    return jwtService.generateAccessToken({ userId: payload.userId });
+  }
 }

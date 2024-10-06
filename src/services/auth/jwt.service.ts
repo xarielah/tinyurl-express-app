@@ -36,3 +36,7 @@ export function isValidJwt(token: string) {
     return false;
   }
 }
+
+export function decode(token: string) {
+  return jwt.decode(token);
+}
