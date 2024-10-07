@@ -20,6 +20,10 @@ export function getShortenLinksByOwner(
   return ShortenLink.find({ owner }).exec();
 }
 
+export function getUserShortenLinkById(shortId: string, userId: string) {
+  return ShortenLink.findOne({ shortId, owner: userId }).exec();
+}
+
 export function getShortenLinkByShortId(
   shortId: string
 ): Promise<ShortenLinkDocument | null> {

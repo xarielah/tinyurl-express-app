@@ -31,6 +31,13 @@ export async function getShortenLinkByShortId(
   return shortenRepository.getShortenLinkByShortId(shortId);
 }
 
+export async function getUserShortenLinkByShortId(
+  shortId: string,
+  userId: string
+): Promise<ShortenLinkDocument | null> {
+  return shortenRepository.getUserShortenLinkById(shortId, userId);
+}
+
 export async function deleteShortenLinkById(data: IDeleteShorten) {
   const result = await shortenRepository.deleteShortenLink(data);
   if (!result) return null;

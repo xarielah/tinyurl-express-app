@@ -14,3 +14,7 @@ export function addVisitEvent(
     eventTimeStamp: Date.now(),
   });
 }
+
+export function getEventsByShortId(shortId: string) {
+  return eventModel.find({ shortLinkId: shortId });
+}

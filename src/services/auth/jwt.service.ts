@@ -6,9 +6,6 @@ export const jwtMiddlewareValidator = expressjwt({
   secret: jwtConfig.secret,
   algorithms: [jwtConfig.algorithm],
   getToken: (req) => req.cookies["access_token"] || req.headers["x-auth-token"],
-  onExpired: (_, err) => {
-    console.log(`Unauthorized: ${err.message}`);
-  },
 });
 
 export function signJwt(payload: any, expiresIn?: string | number) {
