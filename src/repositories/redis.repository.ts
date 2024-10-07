@@ -5,7 +5,6 @@ export function getKeyWithValue(key: string): Promise<string | null> {
 }
 
 export async function removeKeyAndValue(key: string): Promise<number> {
-  console.log("🚀 ~ removeKeyAndValue ~ key:", key);
   return redisClient.del(key);
 }
 

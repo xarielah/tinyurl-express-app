@@ -16,7 +16,6 @@ router.get(
       const result = await eventService.getEventsByShortId(redirectId, userId);
       return res.send({ redirectId, result });
     } catch (error) {
-      console.log("🚀 ~ error:", error);
       return res.status(500).send({ message: "Internal error" });
     }
   }
