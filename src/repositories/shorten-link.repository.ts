@@ -11,6 +11,7 @@ export function createShortenLink(
     originalUrl: data.url,
     shortId: data.shortId,
     owner: data.ownerId,
+    createdAt: new Date(),
   });
 }
 

@@ -4,7 +4,6 @@ import { RedirectErrors } from "../../lib/error-handling/redirect-error.type";
 export const getRedirectInfoValidator = checkSchema(
   {
     shortId: {
-      in: ["params"],
       isString: true,
       exists: true,
       isLength: {
@@ -12,6 +11,20 @@ export const getRedirectInfoValidator = checkSchema(
       },
       errorMessage: RedirectErrors.REDIRECT_CODE_INVALID,
     },
+    locaitonInformation: {
+      optional: true,
+      isObject: true,
+      custom: {
+        options: (value) => {
+          const { country, countryRegion, latitude, longitude, flag } = value;
+          if (country && countryRegion && latitude && longitude && flag) {
+            return true;
+          }
+          return false;
+        },
+        errorMessage: RedirectErrors.REDIRECT_LOCATION_INFORMATION_INVALID,
+      },
+    },
   },
-  ["params"]
+  ["body"]
 );

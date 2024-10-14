@@ -1,46 +1,37 @@
+import { LocationInformationPayload } from "../../controllers/redirect/redirect.models";
 import * as eventRepository from "../../repositories/event.repository";
 import { addVisitEvent } from "../../repositories/event.repository";
 import * as shortenService from "../../services/shorten/shorten.service";
 
 export async function registerVisit(
   shortId: string,
-  ip?: string,
+  location: LocationInformationPayload,
   referer?: string
 ) {
-  let location: string | undefined = "";
   const shortenedUrl = await shortenService.getShortenLinkByShortId(shortId);
   if (!shortenedUrl) return;
-  if (ip) {
-    location = await fetch(`http://ip-api.com/json/${ip}`)
-      .then((res) => res.json())
-      .then((data) => data.country || "")
-      .catch(() => "");
-  }
-  return addVisitEvent(shortenedUrl._id.toString(), location, ip, referer);
+  return addVisitEvent(shortenedUrl._id.toString(), location, referer);
 }
 
-export async function getEventsByShortId(shortId: string, userId: string) {
-  const shortLinkObject = await shortenService.getUserShortenLinkByShortId(
-    shortId,
-    userId
-  );
-  if (!shortLinkObject) return null;
-  const sid = shortLinkObject._id.toString();
+export async function getEventsByShortId(sid: string) {
   const events = await eventRepository.getEventsByShortId(sid);
   const count = events.length;
-  const locations = events.reduce((acc, event) => {
-    if (event.visitorLocation) {
-      if (acc[event.visitorLocation]) {
-        acc[event.visitorLocation] += 1;
+  const locations = events.reduce<Record<string, number>>((acc, event) => {
+    if (event.visitorCountry) {
+      if (acc[event.visitorCountry]) {
+        acc[event.visitorCountry] += 1;
       } else {
-        acc[event.visitorLocation] = 1;
+        acc[event.visitorCountry] = 1;
       }
     }
     return acc;
-  }, {} as Record<string, number>);
+  }, {});
   const eventsDto = events.map((event) => ({
-    location: event.visitorLocation,
-    ip: event.visitorIp,
+    country: event.visitorCountry,
+    countryRegion: event.visitorCountryRegion,
+    latitude: event.visitorLatitude,
+    longitude: event.visitorLongitude,
+    flag: event.visitorFlag,
     referer: event.referer,
     timestamp: event.eventTimeStamp,
   }));

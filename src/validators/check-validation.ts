@@ -8,6 +8,7 @@ export const checkValidation = (
 ) => {
   const result = validationResult(req);
   if (!result.isEmpty()) {
+    console.log(`${req.url} - Validation errors: ${result.array()}`);
     return res.status(400).send({
       errors: result.array({ onlyFirstError: true }).map(mapErrors),
     });

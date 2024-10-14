@@ -5,19 +5,21 @@ import * as eventService from "../../services/event/event.service";
 import * as redirectService from "../../services/redirect/redirect.service";
 import { checkValidation } from "../../validators/check-validation";
 import { getRedirectInfoValidator } from "../../validators/redirect-validators/get-redirect-info.validator";
+import { RedirectPayload } from "./redirect.models";
 const router = express.Router();
 
-// :shortId
 router.post(
-  "/:shortId",
+  "/",
   getRedirectInfoValidator,
   checkValidation,
   async (req: InternalRequest, res: Response) => {
-    const shortId = req.params!.shortId || "";
+    const body = req.body as RedirectPayload;
+    const locationInformation = body.locationInformation;
+    const shortId = body.shortId || "";
     const cacheResult = await redirectService.getRedirectUrlByKey(shortId);
     if (cacheResult) {
       eventService
-        .registerVisit(shortId, req.ip, req.params?.referer)
+        .registerVisit(shortId, locationInformation, req.params?.referer)
         .catch((err) => console.error(err.message));
       return res.status(200).send({ url: cacheResult });
     }

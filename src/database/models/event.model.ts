@@ -5,8 +5,11 @@ export type EventDocument = HydratedDocument<ILinkEvent>;
 export interface ILinkEvent {
   shortLinkId: ObjectId | string;
   referer: string;
-  visitorIp: string;
-  visitorLocation: string;
+  visitorCountry?: string;
+  visitorCountryRegion?: string;
+  visitorLatitude?: number;
+  visitorLongitude?: number;
+  visitorFlag?: string;
   eventTimeStamp: number;
 }
 
@@ -19,11 +22,19 @@ const eventSchema = new Schema<ILinkEvent>({
     type: String,
     required: false,
   },
-  visitorIp: {
+  visitorCountry: {
     type: String,
-    required: false,
   },
-  visitorLocation: {
+  visitorCountryRegion: {
+    type: String,
+  },
+  visitorLatitude: {
+    type: Number,
+  },
+  visitorLongitude: {
+    type: Number,
+  },
+  visitorFlag: {
     type: String,
   },
   eventTimeStamp: {
