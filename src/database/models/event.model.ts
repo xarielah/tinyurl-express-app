@@ -6,10 +6,9 @@ export interface ILinkEvent {
   shortLinkId: ObjectId | string;
   referer: string;
   visitorCountry?: string;
-  visitorCountryRegion?: string;
   visitorLatitude?: number;
   visitorLongitude?: number;
-  visitorFlag?: string;
+  visitorCity?: string;
   eventTimeStamp: number;
 }
 
@@ -25,7 +24,7 @@ const eventSchema = new Schema<ILinkEvent>({
   visitorCountry: {
     type: String,
   },
-  visitorCountryRegion: {
+  visitorCity: {
     type: String,
   },
   visitorLatitude: {
@@ -33,9 +32,6 @@ const eventSchema = new Schema<ILinkEvent>({
   },
   visitorLongitude: {
     type: Number,
-  },
-  visitorFlag: {
-    type: String,
   },
   eventTimeStamp: {
     type: Number,

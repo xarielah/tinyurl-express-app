@@ -28,10 +28,9 @@ export async function getEventsByShortId(sid: string) {
   }, {});
   const eventsDto = events.map((event) => ({
     country: event.visitorCountry,
-    countryRegion: event.visitorCountryRegion,
     latitude: event.visitorLatitude,
     longitude: event.visitorLongitude,
-    flag: event.visitorFlag,
+    city: event.visitorCity,
     referer: event.referer,
     timestamp: event.eventTimeStamp,
   }));
