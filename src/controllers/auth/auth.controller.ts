@@ -50,7 +50,7 @@ router.post(
   async (req: InternalRequest, res: Response) => {
     const result = await authService.registerUser(req.body);
     if (result === null)
-      return res.status(400).send({ message: AuthErrors.USER_ALREADY_EXISTS });
+      return res.status(409).send({ message: AuthErrors.USER_ALREADY_EXISTS });
     return res.status(201).json({
       access_token: result.access_token,
       refresh_token: result.refresh_token,

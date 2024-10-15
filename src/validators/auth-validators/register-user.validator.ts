@@ -5,6 +5,10 @@ export const registerBodyValidation = checkSchema(
     username: {
       isString: true,
       exists: true,
+      matches: {
+        options: /^[A-Za-z0-9]+$/,
+        errorMessage: "Username must contain only A-Z, a-z, 0-9.",
+      },
       isLength: {
         options: { min: 3, max: 20 },
       },
